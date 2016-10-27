@@ -4,8 +4,11 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.App as App
+import Message exposing (Msg(..))
 import Page exposing (Page)
 import WorkTask exposing (WorkTask)
+import Pages.TaskView as TaskView
+import Pages.NewTask as NewTask
 
 
 -- MAIN
@@ -27,7 +30,8 @@ main =
 
 type alias Model =
     { page : Page
-    , workTasks : List WorkTask
+    , tasks : List WorkTask
+    , newTask : WorkTask
     }
 
 
@@ -36,6 +40,10 @@ init =
     ( Model
         Page.TaskView
         []
+        (WorkTask
+            ""
+            ""
+        )
     , Cmd.none
     )
 
@@ -44,13 +52,73 @@ init =
 -- UPDATE
 
 
-type Msg
-    = NavLinkClicked
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    let
+        newTask =
+            model.newTask
+    in
+        case msg of
+            NavActionClicked ->
+                ( handleNavActionClicked model
+                , Cmd.none
+                )
+
+            NavHomeClicked ->
+                ( { model | page = Page.TaskView }
+                , Cmd.none
+                )
+
+            FormNameUpdated newName ->
+                ( { model | newTask = { newTask | name = newName } }
+                , Cmd.none
+                )
+
+            FormDescriptionUpdated newDescription ->
+                ( { model | newTask = { newTask | description = newDescription } }
+                , Cmd.none
+                )
+
+            AddNewTask ->
+                ( addNewTask model, Cmd.none )
+
+
+getPage : Model -> Page
+getPage model =
+    case model.page of
+        Page.TaskView ->
+            Page.NewTask
+
+        _ ->
+            Page.TaskView
+
+
+handleNavActionClicked : Model -> Model
+handleNavActionClicked model =
+    let
+        newTask =
+            if model.page == Page.NewTask then
+                WorkTask "" ""
+            else
+                model.newTask
+    in
+        { model
+            | page = getPage model
+            , newTask = newTask
+        }
+
+
+addNewTask : Model -> Model
+addNewTask model =
+    let
+        newTasks =
+            model.tasks ++ [ model.newTask ]
+    in
+        { model
+            | tasks = newTasks
+            , newTask = WorkTask "" ""
+            , page = Page.TaskView
+        }
 
 
 
@@ -63,10 +131,12 @@ view model =
         [ nav
             [ class "navbar light-shadow" ]
             [ div [ class "container" ]
-                [ h3 [ class "nav-title flex" ]
-                    [ text (getTitle model) ]
-                , a [ class "nav-link", onClick NavLinkClicked ]
-                    [ h3 [] [ i [ class (getIcon model) ] [] ]
+                [ a [ class "nav-link", onClick NavHomeClicked ]
+                    [ h3 [] [ i [ class "fa fa-clock-o" ] [] ]
+                    ]
+                , h3 [ class "nav-title flex" ] [ text (getNavbarTitle model) ]
+                , a [ class "nav-link", onClick NavActionClicked ]
+                    [ h3 [] [ i [ class (getNavbarIcon model) ] [] ]
                     ]
                 ]
             ]
@@ -78,21 +148,28 @@ view model =
 
 viewPage : Model -> Html Msg
 viewPage model =
-    div [] []
-
-
-getTitle : Model -> String
-getTitle model =
     case model.page of
         Page.TaskView ->
-            "Task View"
+            div [ class "task-view page" ]
+                [ TaskView.viewTasks model.tasks ]
+
+        Page.NewTask ->
+            div [ class "new-task page" ]
+                [ NewTask.viewForm model.newTask ]
+
+
+getNavbarTitle : Model -> String
+getNavbarTitle model =
+    case model.page of
+        Page.TaskView ->
+            "Your Tasks"
 
         Page.NewTask ->
             "New Task"
 
 
-getIcon : Model -> String
-getIcon model =
+getNavbarIcon : Model -> String
+getNavbarIcon model =
     case model.page of
         Page.TaskView ->
             "fa fa-plus"

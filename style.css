@@ -5,6 +5,7 @@ html, body {
 body {
   font-family: Arial;
   margin: 0;
+    min-width: 300px;
 }
 
 .app {
@@ -13,11 +14,24 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ddd;
+  background-color: #eee;
+}
+
+.page {
+  width: 100%;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
 }
 
 h3 {
   margin: 0
+}
+
+.pad-left {
+  padding-left: 10px;
 }
 
 .flex {
@@ -27,8 +41,8 @@ h3 {
 .container {
   max-width: 720px;
   width: 100%;
-  flex: 1;
   display: flex;
+  overflow: auto;
 }
 
 .white-bg {
@@ -47,6 +61,7 @@ h3 {
   min-height: 70px;
   display: flex;
   justify-content: center;
+  z-index: 1;
 }
 
 .navbar .nav-link {
@@ -56,6 +71,7 @@ h3 {
   cursor: pointer;
   align-items: center;
   justify-content: center;
+  transition: background-color .3s;
 }
 
 .navbar > .container > * {
@@ -66,6 +82,7 @@ h3 {
   height: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .navbar i {
@@ -74,4 +91,98 @@ h3 {
 
 .navbar .nav-link:hover {
   background-color: #047;
+}
+
+/* TASK VIEW */
+
+.task-view .message {
+  color: #aaa;
+  display: flex;
+  align-items: center;
+}
+
+.tasks {
+    width: 100%;
+}
+
+.task-card {
+    padding: 20px;
+    margin: 20px;
+    background-color: #069;
+    color: white;
+    border: solid 1px #047;
+    transition: box-shadow .2s;
+}
+
+/* FORMS */
+
+.form {
+  width: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-label {
+  margin: 10px 0;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-input {
+  font-size: 1rem;
+  background-color: #fff;
+  padding: 5px 10px;
+  color: #333;
+  border: solid 1px #bbb;
+  transition: box-shadow .2s;
+  width: calc(100% - 20px);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.form-input:focus {
+  border: solid 1px #aaa;
+  box-shadow: #bbb 0px 2px 2px 0px;
+  outline: none;
+}
+
+.form-btn-group {
+  display: flex;
+  margin-top: 40px;
+  flex-direction: row-reverse;
+}
+
+.form-btn {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  flex: 1;
+  transition: .2s;
+  box-shadow: none;
+}
+
+.form-submit-btn {
+  background-color: #069;
+  color: white;
+}
+
+.form-submit-btn:hover {
+  background-color: #047;
+}
+
+.form-cancel-btn {
+  background-color: #fff;
+  color: #333;
+}
+
+.form-cancel-btn:hover {
+  background-color: #ddd;
 }
